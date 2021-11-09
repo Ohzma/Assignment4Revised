@@ -1,4 +1,5 @@
-/* Class: CMSC203 CRN 22297
+/* **THIS ASSIGNMENT HAS BEEN REVISED PER PROF. GRINBERG'S INSTRUCTIONS
+ * Class: CMSC203 CRN 22297
  *Program: Assignment 4
  *Instructor: Grigoriy Grinberg
  *Summary of Description: (A property management company manages individual properties they 
@@ -16,17 +17,17 @@
 public class ManagementCompany 
 {
 	// Class Configuration
-	private int MAX_PROPERTY = 5;
 	private int MGMT_WIDTH = 10;
 	private int MGMT_DEPTH = 10;
-
+	private int MAX_PROPERTY = 5;
+	
 	// Class Variables
+	private double ManagementFee = 0.00;
 	private String Name = "";
 	private String TaxID = "";
-	private double ManagementFee = 0.00;
+	private int currentPropertyIndex = -1; // Starts at 0
 	private Plot ManagementPlot;
 	private Property Properties[] = new Property[MAX_PROPERTY];
-	private int currentPropertyIndex = -1; // Starts at 0
 
 	/*
 	 * Default/Empty constructor
@@ -34,7 +35,7 @@ public class ManagementCompany
 	 */
 	public ManagementCompany() 
 	{
-		this.ManagementPlot = new Plot(0, 0, MGMT_WIDTH, MGMT_DEPTH);
+		this.ManagementPlot = new Plot(0, 0, MGMT_DEPTH, MGMT_WIDTH);
 	}
 
 	/*
@@ -45,10 +46,10 @@ public class ManagementCompany
 	 */
 	public ManagementCompany(String n, String tid, double mfee) 
 	{
+		this.ManagementFee = mfee;
 		this.Name = n;
 		this.TaxID = tid;
-		this.ManagementFee = mfee;
-		this.ManagementPlot = new Plot(0, 0, MGMT_WIDTH, MGMT_DEPTH);
+		this.ManagementPlot = new Plot(0, 0, MGMT_DEPTH, MGMT_WIDTH);
 	}
 
 	/*
@@ -56,10 +57,19 @@ public class ManagementCompany
 	 */
 	public ManagementCompany(String n, String tid, double mfee, int x, int y, int w, int d) 
 	{
-		this.Name = n;
 		this.TaxID = tid;
+		this.Name = n;
 		this.ManagementFee = mfee;
 		this.ManagementPlot = new Plot(x, y, w, d);
+	}
+	
+	/*
+	 * Returns the management property plot
+	 * return Plot plot
+	 */
+	public Plot getPlot() 
+	{ 
+		return this.ManagementPlot; 
 	}
 
 	/*
@@ -72,15 +82,6 @@ public class ManagementCompany
 	}
 
 	/*
-	 * Returns the management property plog
-	 * return Plot plot
-	 */
-	public Plot getPlot() 
-	{ 
-		return this.ManagementPlot; 
-	}
-
-	/*
 	 * Returns the management company name
 	 * return String name
 	 */
@@ -90,52 +91,25 @@ public class ManagementCompany
 	}
 
 	/*
-	 * Returns the total rent due
-	 * return Double rent total
-	 */
-	public double totalRent() 
-	{
-		// Variables
-		double total = 0;
-
-		// Loop
-		for (int i = 0; i < this.Properties.length; i++)
-		{
-			// Checks
-			if (this.Properties[i] == null) 
-			{ 
-				continue; 
-			}
-
-			// Variables
-			Property p = this.Properties[i];
-			total += p.getRentAmount();
-		}
-
-		// Return
-		return (this.Properties.length > 0 ? total : 0.00);
-	}
-
-	/*
 	 * Returns the highest rent property
 	 */
 	public Double maxRentProp() 
 	{
 		// Variables
-		double highest = 0;
 		String stringified = "";
+		double highest = 0;
 
 		// Loop
-		for (int i = 0; i < this.Properties.length; i++) 
+		for (int i = 0; this.Properties.length > i; i++) 
 		{
 			// Variables
 			Property p = this.Properties[i];
 
-			if (p == null) 
+			while (p == null) 
 			{ 
 				continue; 
 			}
-			if (p.getRentAmount() > highest) 
+			while (highest < p.getRentAmount()) 
 			{
 				highest = p.getRentAmount();
 				//stringified = p.toString();
@@ -157,10 +131,10 @@ public class ManagementCompany
 		String r = "";
 
 		// Append
-		r += "List of properties for " + this.getName() + ", TaxID: " + this.TaxID;
+		r += "List of properties for " + this.getName() + this.TaxID + ", TaxID: ";
 
 		// Loop
-		for (int i = 0; i < this.Properties.length; i++) 
+		for (int i = 0; this.Properties.length > i; i++) 
 		{
 			// Checks
 			if (this.Properties[i] == null) 
@@ -173,23 +147,51 @@ public class ManagementCompany
 		}
 
 		// Append
-		r += "\ntotal management Fee: " + (this.totalRent() * (this.ManagementFee * 0.01));
+		r += "\ntotal management Fee: " + ((this.ManagementFee * 0.01) * this.totalRent());
 
 		// Return
 		return r;
 	}
 
 	/*
+	 * Returns the total rent due
+	 * return Double rent total
+	 */
+	public double totalRent() 
+	{
+		// Variables
+		double total = 0;
+
+		// Loop
+		for (int i = 0; this.Properties.length > i; i++)
+		{
+			// Checks
+			if (this.Properties[i] == null) 
+			{ 
+				continue; 
+			}
+
+			// Variables
+			Property p = this.Properties[i];
+			total += p.getRentAmount();
+		}
+
+		// Return
+		return (0 < this.Properties.length ? total : 0.00);
+	}
+	
+	/*
 	 * Add property (Property)
 	 */
 	public int addProperty(Property P) 
 	{
 		// Variables
-		int index = currentPropertyIndex;
 		int newIndex = currentPropertyIndex + 1;
+		int index = currentPropertyIndex;
+		
 
 		// Checks
-		if (newIndex >= this.MAX_PROPERTY) 
+		while (this.MAX_PROPERTY <= newIndex) 
 		{ 
 			return -1; 
 		}
@@ -212,7 +214,7 @@ public class ManagementCompany
 		int newIndex = currentPropertyIndex + 1;
 
 		// Checks
-		if (newIndex >= this.MAX_PROPERTY) 
+		while (this.MAX_PROPERTY <= newIndex) 
 		{ 
 			return -1; 
 		}
@@ -236,17 +238,17 @@ public class ManagementCompany
 		Plot tempPlot = new Plot(x, y, w, d);
 
 		// Checks
-		if (newIndex >= this.MAX_PROPERTY) 
+		while (this.MAX_PROPERTY <= newIndex) 
 		{ 
 			return -1; 
 		}
-		if (this.ManagementPlot.encompasses(tempPlot) == false) 
+		while (this.ManagementPlot.encompasses(tempPlot) == false) 
 		{ 
 			return -3; 
 		}
-		if (index >= 0) 
+		while (index >= 0) 
 		{
-			for (int i = 0; i < this.Properties.length; i++) 
+			for (int i = 0; this.Properties.length > i; i++) 
 			{
 				// Checks
 				if (this.Properties[i] == null) 

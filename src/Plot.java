@@ -1,18 +1,33 @@
+/* Class: CMSC203 CRN 22297
+ *Program: Assignment 4
+ *Instructor: Grigoriy Grinberg
+ *Summary of Description: (A property management company manages individual properties they 
+ will build to rent, and charges them a management fee as the percentages of the monthly rental 
+ amount. The properties cannot overlap each other, and each property must be within the limits of 
+ the management company’s plot.  Write an application that lets the user create a management company 
+ and add the properties managed by the company to its list. Assume the maximum number of properties 
+ handled by the company is 5.  
+ *Due Date: 25OCT2021
+ *Integrity Pledge: I pledge that I have completed the programming assignment independently.
+ *I have not copied the code from a student or any source.
+ *Student: Daniel Cortes Gratacos
+ */
+
 public class Plot 
 {
 	// Class Variables
 	private int PlotX = 0;
+	private int PlotD = 0;
 	private int PlotY = 0;
 	private int PlotW = 0;
-	private int PlotD = 0;
 
 	/*
 	 * Basic constructor, no arguments
 	 */
 	public Plot() 
 	{
-		this.PlotW = 1;
 		this.PlotD = 1;
+		this.PlotW = 1;
 	}
 
 	/*
@@ -22,22 +37,14 @@ public class Plot
 	 *  Width
 	 *  Depth
 	 */
-	public Plot(int X, int Y, int W, int D) 
+	public Plot(int D, int W, int Y, int X) 
 	{
-		this.PlotX = X;
-		this.PlotY = Y;
-		this.PlotW = W;
 		this.PlotD = D;
+		this.PlotW = W;
+		this.PlotY = Y;
+		this.PlotX = X;
 	}
-
-	/*
-	 * Get X coordinate
-	 */
-	public int getX() 
-	{ 
-		return this.PlotX; 
-	}
-
+	
 	/*
 	 * Get Y coordinate
 	 */
@@ -47,19 +54,36 @@ public class Plot
 	}
 
 	/*
-	 * Get Width
+	 * Get X coordinate
 	 */
-	public int getWidth() 
+	public int getX() 
 	{ 
-		return this.PlotW; 
+		return this.PlotX; 
 	}
-
+	
 	/*
 	 * Get Depth
 	 */
 	public int getDepth() 
 	{ 
 		return this.PlotD; 
+	}
+
+	/*
+	 * Get Width
+	 */
+	public int getWidth() 
+	{ 
+		return this.PlotW; 
+	}
+	
+	/*
+	 * Set Y
+	 * Int Y
+	 */
+	public void setY(int Y) 
+	{ 
+		this.PlotY = Y; 
 	}
 
 	/*
@@ -70,14 +94,13 @@ public class Plot
 	{ 
 		this.PlotX = X; 
 	}
-
+	
 	/*
-	 * Set Y
-	 * Int Y
+	 * Set Depth
 	 */
-	public void setY(int Y) 
+	public void setDepth(int D) 
 	{ 
-		this.PlotY = Y; 
+		this.PlotD = D; 
 	}
 
 	/*
@@ -89,14 +112,6 @@ public class Plot
 	}
 
 	/*
-	 * Set Depth
-	 */
-	public void setDepth(int D) 
-	{ 
-		this.PlotD = D; 
-	}
-
-	/*
 	 * Check plot overlapping
 	 * Plot plot
 	 */
@@ -104,60 +119,22 @@ public class Plot
 	{
 		// Variables
 		int result = 0;
-		int p1x1 = this.getX(); // starting x coord (left)
-		int p2x1 = P.getX();
-		int p1x2 = this.getX() + this.getWidth(); // ending x coord (right)
-		int p1y1 = this.getY(); // starting y coord (top)
-		int p2y1 = P.getY();
 		int p1y2 = this.getY() + this.getDepth(); // ending y coord (bottom)
+		int p2y1 = P.getY();
+		int p1y1 = this.getY(); // starting y coord (top)
+		int p1x2 = this.getX() + this.getWidth(); // ending x coord (right)
+		int p2x1 = P.getX();
+		int p1x1 = this.getX(); // starting x coord (left)
 
 		// Checks
-		if (p1x1 >= p2x1 || p2x1 <= p1x2) 
+		while (p2x1 <= p1x2 || p1x1 >= p2x1) 
 		{ 
 			result = 1; 
 		}
-		if (p1y1 >= p2y1 || p2y1 <= p1y2) 
+		while (p2y1 <= p1y2 || p1y1 >= p2y1) 
 		{ 
 			result = 1; 
 		}
-
-		// Return
-		return result == 0 ? false : true;
-	}
-
-	/*
-	 * Check plot container
-	 */
-	public boolean encompasses(Plot P) 
-	{
-		// Variables
-		int result = 0;
-		int p1x1 = this.getX(); // starting x coord (left)
-		int p2x1 = P.getX();
-		int p1x2 = this.getX() + this.getWidth(); // ending x coord (right)
-		int p1y1 = this.getY(); // starting y coord (top)
-		int p2y1 = P.getY();
-		int p1y2 = this.getY() + this.getDepth(); // ending y coord (bottom)
-
-		// Checks
-		if (p1x1 + this.getWidth() > p2x1) 
-		{ 
-			result = 1; 
-		}
-		if (p1y1 + this.getDepth() > p2y1) 
-		{ 
-			result = 1; 
-		}
-		if (p1x1 >= p2x1 || p2x1 <= p1x2) 
-		{ 
-			result = 1; 
-		}
-		if (p1y1 >= p2y1 || p2y1 <= p1y2) 
-		{ 
-			result = 1; 
-		}
-
-		System.out.println("Encompasses: this.X" + p1x1 + " P.X " + p2x1);
 
 		// Return
 		return result == 0 ? false : true;
@@ -178,5 +155,43 @@ public class Plot
 
 		// Return
 		return r;
+	}
+	
+	/*
+	 * Check plot container
+	 */
+	public boolean encompasses(Plot P) 
+	{
+		// Variables
+		int result = 0;
+		int p2x1 = P.getX();
+		int p2y1 = P.getY();
+		int p1x1 = this.getX(); // starting x coord (left)
+		int p1x2 = this.getX() + this.getWidth(); // ending x coord (right)
+		int p1y1 = this.getY(); // starting y coord (top)
+		int p1y2 = this.getY() + this.getDepth(); // ending y coord (bottom)
+
+		// Checks
+		while (p1x1 + this.getWidth() > p2x1) 
+		{ 
+			result = 1; 
+		}
+		while (p1y1 + this.getDepth() > p2y1) 
+		{ 
+			result = 1; 
+		}
+		while (p1x1 >= p2x1 || p2x1 <= p1x2) 
+		{ 
+			result = 1; 
+		}
+		while (p1y1 >= p2y1 || p2y1 <= p1y2) 
+		{ 
+			result = 1; 
+		}
+
+		System.out.println("Encompasses: this.X" + p1x1 + " P.X " + p2x1);
+
+		// Return
+		return result == 0 ? false : true;
 	}
 }
